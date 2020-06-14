@@ -1,0 +1,13 @@
+<launch>
+    <!-- Robot Pose, add this to offset dummy link from ground -->
+    <arg name="z" default="0.6" />
+
+    <!-- We resume the logic in empty_world.launch, changing only the name of the world to be launched -->
+    <param name="robot_description" command="xacro $(find avatar_description)/urdf/avatar_description.xacro" />
+    <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" args="-param robot_description -urdf -model avatar -z $(arg z)" />
+
+    <include file="$(find gazebo_ros)/launch/empty_world.launch">
+        <arg name="world_name" value="$(find avatar_gazebo)/worlds/robot.world" />
+        <!-- more default parameters can be changed here -->
+    </include>
+</launch>

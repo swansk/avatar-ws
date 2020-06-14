@@ -1,0 +1,30 @@
+avatar:
+  # Publish all joint states -----------------------------------
+  joint_state_controller:
+    type: joint_state_controller/JointStateController
+    publish_rate: 50  
+
+  # Position Controllers ---------------------------------------
+  mainAxle_position_controller:
+    type: effort_controllers/JointPositionController
+    joint: mainAxle
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+
+  gearShaft1_position_controller:
+    type: effort_controllers/JointPositionController
+    joint: gearShaft1
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+  gearShaft2_position_controller:
+    type: effort_controllers/JointPositionController
+    joint: gearShaft2
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+    
+  # Interesting note, our "spinner" joints function much better with a low d
+  spinner1_position_controller:
+    type: effort_controllers/JointPositionController
+    joint: spinner1
+    pid: {p: 100.0, i: 0.01, d: 0.1}
+  spinner2_position_controller:
+    type: effort_controllers/JointPositionController
+    joint: spinner2
+    pid: {p: 100.0, i: 0.01, d: 0.1}

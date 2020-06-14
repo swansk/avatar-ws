@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SOME of this URDF was automatically created by SolidWorks to URDF Exporter! Originally created by Stephen Brawner (brawner@gmail.com) 
+     Commit Version: 1.5.1-0-g916b5db  Build Version: 1.5.7152.31018
+     For more information, please see http://wiki.ros.org/sw_urdf_exporter -->
+<robot name="avatar" 
+    xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <!-- Enable links to collide -->
+    <selfCollide>true</selfCollide>
+
+    <!-- Constants -->
+    <xacro:property name="PI" value="3.1415926535897931"/>
+
+    <!-- Includes -->
+    <xacro:include filename="$(find avatar_description)/urdf/avatar_description.gazebo" />
+
+    <!-- Fix Robot to Dummy link & world -->
+    <link name="world" />
+
+    <joint name="fixed" type="fixed">
+        <parent link="world"/>
+        <child link="dummy_link"/>
+    </joint>
+
+    <link name='dummy_link'>
+        <collision>
+            <geometry>
+                <box size=".1 .1 1.2" />
+            </geometry>
+        </collision>
+        <visual>
+            <geometry>
+                <box size=".1 .1 1.2" />
+            </geometry>
+        </visual>
+    </link>
+
+    <joint name='dummy_joint' type='fixed'>
+        <origin xyz="0 0.2 0.55" rpy="0.0 ${-pi} 0.0" />
+        <parent link="dummy_link" />
+        <child link="base_link" />
+    </joint>
+
+    <!-- Auto Generated Solidworks (some edits for includes) -->
+    <link name="base_link">
+        <inertial>
+            <origin xyz="9.84723680692198E-06 0.0347416710597603 0.0315046823077725" rpy="0 0 0" />
+            <mass value="0.765174681475797" />
+            <inertia ixx="0.00670220169935951" ixy="2.8860455664369E-07" ixz="-8.97744006002084E-07" iyy="0.005113416277335" iyz="0.000973871023660664" izz="0.00262906062105691" />
+        </inertial>
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://avatar_description/meshes/base_link.STL" />
+            </geometry>
+            <material name="">
+                <color rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://avatar_description/meshes/base_link.STL" />
+            </geometry>
+        </collision>
+    </link>
+    <link name="diff_1_bottom">
+        <inertial>
+            <origin xyz="-7.5392E-05 -0.00067175 -0.015195" rpy="0 0 0" />
+            <mass value="0.51878" />
+            <inertia ixx="0.0013132" ixy="4.8332E-10" ixz="-1.2255E-10" iyy="0.0011318" iyz="6.8964E-07" izz="0.00089667" />
+        </inertial>
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://avatar_description/meshes/diff_1_bottom.STL" />
+            </geometry>
+            <material name="">
+                <color rgba="0.79216 0.81961 0.93333 1" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://avatar_description/meshes/diff_1_bottom.STL" />
+            </geometry>
+        </collision>
+    </link>
+    <joint name="mainAxle" type="revolute">
+        <origin xyz="0 0 0.128" rpy="0 0.58656 0" />
+        <parent link="base_link" />
+        <child link="diff_1_bottom" />
+        <axis xyz="0 -1 0" />
+        <limit lower="${-pi/2}" upper="${pi/2}" effort="100" velocity="20" />
+    </joint>
+    <link name="diff_1_top">
+        <inertial>
+            <origin xyz="-2.40841941730185E-06 0.0218674365922194 -0.00266309313912521" rpy="0 0 0" />
+            <mass value="0.21974430584568" />
+            <inertia ixx="5.59829314777643E-05" ixy="2.04026825762083E-11" ixz="1.51998549362351E-10" iyy="0.00014726449255725" iyz="-2.71845190981882E-06" izz="0.000125273683232479" />
+        </inertial>
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://avatar_description/meshes/diff_1_top.STL" />
+            </geometry>
+            <material name="">
+                <color rgba="0.529411764705882 0.549019607843137 0.549019607843137 1" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://avatar_description/meshes/diff_1_top.STL" />
+            </geometry>
+        </collision>
+    </link>
+    <joint name="gearShaft1" type="revolute">
+        <origin xyz="0 0 0.0545" rpy="1.7057 0 0" />
+        <parent link="diff_1_bottom" />
+        <child link="diff_1_top" />
+        <axis xyz="1 0 0" />
+        <limit lower="${-pi/2}" upper="${pi/2}" effort="100" velocity="20" />
+    </joint>
+    <link name="arm_link_1">
+        <inertial>
+            <origin xyz="0.00011048 0.2908 8.2148E-05" rpy="0 0 0" />
+            <mass value="0.71546" />
+            <inertia ixx="0.0018995" ixy="5.5347E-07" ixz="-5.1603E-05" iyy="0.00088493" iyz="4.1145E-07" izz="0.0019305" />
+        </inertial>
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://avatar_description/meshes/arm_link_1.STL" />
+            </geometry>
+            <material name="">
+                <color rgba="0.69804 0.69804 0.69804 1" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://avatar_description/meshes/arm_link_1.STL" />
+            </geometry>
+        </collision>
+    </link>
+    <joint name="spinner1" type="revolute">
+        <origin xyz="0 0.023457 -0.0028567" rpy="-0.12136 0.05269 -0.0064227" />
+        <parent link="diff_1_top" />
+        <child link="arm_link_1" />
+        <axis xyz="0 1 0" />
+        <limit lower="${-pi}" upper="${pi}" effort="100" velocity="20" />
+    </joint>
+    <link name="diff_2_top">
+        <inertial>
+            <origin xyz="-2.63680852098658E-06 0.0203376064523867 0.00846416278527078" rpy="0 0 0" />
+            <mass value="0.219740939243461" />
+            <inertia ixx="5.59807206896503E-05" ixy="9.58107320994721E-11" ixz="1.36761868067372E-10" iyy="0.000144250442922429" iyz="8.03595148383287E-06" izz="0.000128285541635512" />
+        </inertial>
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://avatar_description/meshes/diff_2_top.STL" />
+            </geometry>
+            <material name="">
+                <color rgba="0.529411764705882 0.549019607843137 0.549019607843137 1" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://avatar_description/meshes/diff_2_top.STL" />
+            </geometry>
+        </collision>
+    </link>
+    <joint name="gearShaft2" type="revolute">
+        <origin xyz="0 0.43537 0" rpy="3.0993 -0.93134 -3.1416" />
+        <parent link="arm_link_1" />
+        <child link="diff_2_top" />
+        <axis xyz="1 0 0" />
+        <limit lower="${-pi/2}" upper="${pi/2}" effort="100" velocity="20" />
+    </joint>
+    <link name="arm_link_2">
+        <inertial>
+            <origin xyz="-3.4553E-08 0.13463 -1.7501E-08" rpy="0 0 0" />
+            <mass value="0.25283" />
+            <inertia ixx="0.00074507" ixy="-1.0899E-11" ixz="-1.4219E-07" iyy="8.8769E-05" iyz="-2.2914E-11" izz="0.00074509" />
+        </inertial>
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://avatar_description/meshes/arm_link_2.STL" />
+            </geometry>
+            <material name="">
+                <color rgba="0.69804 0.69804 0.69804 1" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://avatar_description/meshes/arm_link_2.STL" />
+            </geometry>
+        </collision>
+    </link>
+    <joint name="spinner2" type="revolute">
+        <origin xyz="0 0.042663 0.017756" rpy="1.5258 1.176 1.5221" />
+        <parent link="diff_2_top" />
+        <child link="arm_link_2" />
+        <axis xyz="0 1 0" />
+        <limit lower="${-pi}" upper="${pi}" effort="100" velocity="20" />
+    </joint>
+
+    <!-- Create transmissions for each moveable joint -->
+    <transmission name="main_axle_transmission">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="mainAxle">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="mainAxleMotor">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+
+    <transmission name="gear_shaft_1_transmission">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="gearShaft1">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="gearShaft1Motor">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+
+    <transmission name="spinner1_transmission">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="spinner1">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="spinner1Motor">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+
+    <transmission name="gear_shaft_2_transmission">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="gearShaft2">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="gearShaft2Motor">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+
+    <transmission name="spinner_2_transmission">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="spinner2">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="spinner2Motor">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+</robot>
