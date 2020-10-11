@@ -32,6 +32,13 @@ Install effort controllers for `ros_control`
 sudo apt install ros-noetic-effort-controllers
 ```
 
+### Environment Setup
+It is a good idea to source the ROS setup script in your bash terminal. If you have multiple ROS installations, you need to comment out the previous source in your bashrc. Add this to your `~/.bashrc` file
+
+```
+source /opt/ros/noetic/setup.bash
+```
+
 ## Building / Sourcing
 Before using this workspace and following any modifications to this workspace, make sure to build with catkin:
 ```
