@@ -78,7 +78,7 @@ def calibrate_odrive_axis(odrive_axis):
 
 def main() -> None:
     parser = argparse.ArgumentParser(
-        description="Configure ODrive with settings used for AVATAR Capstone project. Please only have one ODrive connected when using this script (unless you specify the serial no)."
+        description="Configure ODrive axis with settings used for AVATAR Capstone project. Please only have one ODrive connected when using this script (unless you specify the serial no)."
     )
     parser.add_argument("--axis", type=str, help="Axis to configure.", default="axis0")
     parser.add_argument(
@@ -92,6 +92,12 @@ def main() -> None:
         action="store_true",
         help="Calibrate motor after configuration.",
         default=False,
+    )
+    parser.add_argument(
+        "--cs_pin",
+        type=int,
+        help="GPIO pin connected to encoder CS",
+        default=None
     )
     args = parser.parse_args()
 
@@ -108,7 +114,7 @@ def main() -> None:
         my_odrive.fw_version_minor,
         my_odrive.fw_version_revision,
     )
-    print("ODrive FW Version:", fw_version)
+    print("Detected ODrive with FW Version:", fw_version)
     if fw_version != "0.5.1":
         print(
             "Need version 0.5.1, please run command: 'sudo odrivetool dfu' to update firmware, exiting..."
@@ -116,6 +122,9 @@ def main() -> None:
         return -1
 
     odrive_axis = getattr(my_odrive, args.axis)
+
+    if args.cs_pin is not None:
+        encoder_config_dict["abs_spi_cs_gpio_pin"] = args.cs_pin
 
     # Configure motor and encoder
     configure_odrive_axis_device(odrive_axis.encoder, encoder_config_dict)
@@ -127,6 +136,7 @@ def main() -> None:
 
     # Save configuration
     my_odrive.save_configuration()
+    print("Odrive configured!")
 
 
 if __name__ == "__main__":
