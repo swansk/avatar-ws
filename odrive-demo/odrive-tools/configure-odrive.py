@@ -9,7 +9,7 @@ encoder_config_dict = {
     "mode": 257,
     "use_index": False,
     "find_idx_on_lockin_only": False,
-    "abs_spi_cs_gpio_pin": 3,
+    "abs_spi_cs_gpio_pin": 5,
     "zero_count_on_find_idx": True,
     "cpr": 16384,
     "offset": 2224,
