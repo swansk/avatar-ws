@@ -9,7 +9,7 @@ encoder_config_dict = {
     "mode": 257,
     "use_index": False,
     "find_idx_on_lockin_only": False,
-    "abs_spi_cs_gpio_pin": 5,
+    "abs_spi_cs_gpio_pin": 6,
     "zero_count_on_find_idx": True,
     "cpr": 16384,
     "offset": 2224,
@@ -37,7 +37,7 @@ motor_config_dict = {
     "torque_constant": 0.03999999910593033,
     "direction": -1,
     "motor_type": 0,
-    "current_lim": 10.0,
+    "current_lim": 20.0,
     "current_lim_margin": 8.0,
     "torque_lim": "inf",
     "inverter_temp_limit_lower": 100.0,
@@ -52,6 +52,31 @@ motor_config_dict = {
     "acim_autoflux_decay_gain": 1.0,
 }
 
+controller_config_dict = {
+    "gain_scheduling_width": 10.0,
+    "enable_vel_limit": True,
+    "enable_current_mode_vel_limit": True,
+    "enable_gain_scheduling": False,
+    "enable_overspeed_error": True,
+    "control_mode": 3,
+    "input_mode": 1,
+    "pos_gain": 20.0,
+    "vel_gain": 0.16,
+    "vel_integrator_gain": 0.32,
+    "vel_limit": 10.0,
+    "vel_limit_tolerance": 1.2000000476837158,
+    "vel_ramp_rate": 1.0,
+    "torque_ramp_rate": 0.009999999776482582,
+    "circular_setpoints": True,
+    "circular_setpoint_range": 1.0,
+    "homing_speed": 0.25,
+    "inertia": 0.0,
+    "axis_to_mirror": 255,
+    "mirror_ratio": 1.0,
+    "load_encoder_axis": 0,
+    "input_filter_bandwidth": 2.0,
+}
+
 
 def configure_odrive_axis_device(odrive_axis_device, config_dict):
     for key in config_dict:
@@ -59,21 +84,23 @@ def configure_odrive_axis_device(odrive_axis_device, config_dict):
 
 
 def calibrate_odrive_axis(odrive_axis):
-    # Motor calibration
-    odrive_axis.requested_state = AXIS_STATE_FULL_CALIBRATION_SEQUENCE
+    if odrive_axis.encoder.is_ready:
+        print("Encoder ready, calibrating...")
+        # Motor calibration
+        odrive_axis.requested_state = AXIS_STATE_FULL_CALIBRATION_SEQUENCE
+        while odrive_axis.current_state != AXIS_STATE_IDLE:
+            time.sleep(0.1)
+        print("Motor calibrated!")
+        odrive_axis.motor.config.pre_calibrated = True
 
-    while odrive_axis.current_state != AXIS_STATE_IDLE:
-        time.sleep(0.1)
-
-    odrive_axis.motor.config.pre_calibrated = True
-
-    # Encoder calibration
-    odrive_axis.requested_state = AXIS_STATE_ENCODER_OFFSET_CALIBRATION
-
-    while odrive_axis.current_state != AXIS_STATE_IDLE:
-        time.sleep(0.1)
-
-    odrive_axis.encoder.config.pre_calibrated = True
+        # Encoder calibration
+        odrive_axis.requested_state = AXIS_STATE_ENCODER_OFFSET_CALIBRATION
+        while odrive_axis.current_state != AXIS_STATE_IDLE:
+            time.sleep(0.1)
+        print("Encoder calibrated!")
+        odrive_axis.encoder.config.pre_calibrated = True
+    else:
+        print("Encoder not ready! Check chip select pin and power cycle")
 
 
 def main() -> None:
@@ -94,10 +121,7 @@ def main() -> None:
         default=False,
     )
     parser.add_argument(
-        "--cs_pin",
-        type=int,
-        help="GPIO pin connected to encoder CS",
-        default=None
+        "--cs_pin", type=int, help="GPIO pin connected to encoder CS", default=None
     )
     args = parser.parse_args()
 
@@ -126,9 +150,11 @@ def main() -> None:
     if args.cs_pin is not None:
         encoder_config_dict["abs_spi_cs_gpio_pin"] = args.cs_pin
 
-    # Configure motor and encoder
+    # Configure motor, encoder, controller
+    print("Configuring motor, encoder, controller")
     configure_odrive_axis_device(odrive_axis.encoder, encoder_config_dict)
     configure_odrive_axis_device(odrive_axis.motor, motor_config_dict)
+    configure_odrive_axis_device(odrive_axis.controller, controller_config_dict)
 
     if args.cal:
         print("Calibrating ODrive...")

@@ -58,18 +58,19 @@ class ApeHaptics:
 
     def run(self):
         r = rospy.Rate(100)
-        self.odrive.axis0.controller.config.control_mode = CONTROL_MODE_TORQUE_CONTROL
+        self.odrive.axis1.controller.config.control_mode = CONTROL_MODE_TORQUE_CONTROL
         while not rospy.is_shutdown():
             self.sim_cmd_position_pub.publish(self.actual_pos_sim)
-            odrive_pos_circular = self.odrive.axis0.encoder.pos_circular
+            odrive_pos_circular = self.odrive.axis1.encoder.pos_circular
 
             sim_cmd_position = odrive_pos_circular * 6.28 - 0.5
             pos_diff = self.actual_pos_sim - self.cmd_pos_sim
             if abs(pos_diff) > 0.15:
-                self.odrive.axis0.controller.input_torque = pos_diff * ENVIRONMENTAL_I
-                self.odrive.axis0.requested_state = AXIS_STATE_CLOSED_LOOP_CONTROL
+                self.odrive.axis1.controller.input_torque = pos_diff * ENVIRONMENTAL_I
+                self.odrive.axis1.requested_state = AXIS_STATE_CLOSED_LOOP_CONTROL
+                print("EEE")
             else:
-                self.odrive.axis0.requested_state = AXIS_STATE_IDLE
+                self.odrive.axis1.requested_state = AXIS_STATE_IDLE
 
             self.sim_cmd_position_pub.publish(sim_cmd_position)
             r.sleep()
